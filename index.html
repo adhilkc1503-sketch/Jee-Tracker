@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JEE AIR < 10 — Command Center</title>
+<style>
+:root{--bg:#0b0f12;--card:#12181d;--card2:#182128;--line:#29343c;--text:#f2f5f7;--muted:#9aa7b1;--accent:#18d88b;--blue:#5ca8ff;--red:#ff6675;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0b0f12ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:20px;margin:0}.brand{display:flex;gap:10px;align-items:center}.target{color:var(--accent);font-weight:800}
+button,.tab{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 12px;border-radius:10px;cursor:pointer}.tabs{display:flex;gap:7px;overflow:auto;padding:12px 18px;border-bottom:1px solid var(--line)}.tab.active{background:var(--accent);color:#03140d;border-color:var(--accent);font-weight:800}
+main{max-width:1150px;margin:auto;padding:18px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.label{color:var(--muted);font-size:13px}.big{font-size:30px;font-weight:850;margin-top:4px}.green{color:var(--accent)}.blue{color:var(--blue)}.red{color:var(--red)}.yellow{color:var(--yellow)}
+.progress{height:9px;background:#253039;border-radius:20px;overflow:hidden;margin:9px 0}.progress i{display:block;height:100%;background:var(--accent);width:0}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted)}select,input{background:#0c1115;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px;width:100%}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.check{accent-color:var(--accent);transform:scale(1.2)}.pill{padding:4px 8px;border-radius:99px;background:#1d292f;font-size:12px}.quote{font-size:19px;font-weight:750}.danger{border-color:#5a2730}.success{border-color:#195c44}
+footer{padding:25px;text-align:center;color:var(--muted)}@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}header{position:static}main{padding:12px}}@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.big{font-size:25px}th,td{padding:7px;font-size:12px}}
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0f12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JEE AIR < 10">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<header>
+  <div class="brand"><span>🎯</span><div><h1>JEE Command Center</h1><div class="small">Mission: <span class="target">AIR &lt; 10</span> · JEE 2028</div></div></div>
+  <button onclick="resetData()">Reset</button>
+</header>
+
+<nav class="tabs">
+<button class="tab active" data-page="dash">Dashboard</button>
+<button class="tab" data-page="syllabus">Syllabus</button>
+<button class="tab" data-page="daily">Daily System</button>
+<button class="tab" data-page="tests">Tests</button>
+<button class="tab" data-page="revision">Revision</button>
+<button class="tab" data-page="analytics">Analytics</button><button class="tab" data-page="mistakes">Mistakes</button><button class="tab" data-page="backlog">Backlog</button><button class="tab" data-page="calendar">Daily Planner</button>
+</nav>
+
+<main>
+<section id="dash" class="page active">
+  <div class="card">
+    <div class="row"><div><div class="label">MUHAMMED ADHIL · CLASS 11 · TARGET 2028</div><div class="quote">One goal. One focus. <span class="green">AIR &lt; 10.</span></div></div><span style="font-size:40px">🏆</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">JEE Main 2028</div><div id="mainDays" class="big green">—</div><div class="small">days remaining</div></div>
+    <div class="card"><div class="label">JEE Advanced 2028</div><div id="advDays" class="big green">—</div><div class="small">days remaining</div></div>
+    <div class="card"><div class="label">Syllabus</div><div id="syllPct" class="big blue">0%</div><div class="small">chapters completed</div></div>
+    <div class="card"><div class="label">Daily Goal</div><div id="dailyPct" class="big yellow">0/30</div><div class="small">questions</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>🔥 Current mission</h3><p id="mission" class="muted">Complete today's target and keep the streak alive.</p><div class="progress"><i id="missionBar"></i></div></div>
+    <div class="card"><h3>⚠️ Weak-area radar</h3><div id="weakRadar" class="muted">Take tests and log mistakes to populate this.</div></div>
+  </div>
+  <div class="card"><h3>🏆 AIR &lt; 10 operating principle</h3><p class="quote">Learn → Solve → Test → Analyse → Fix → Revise → Repeat.</p></div><div class="card"><h3>JEE preparation loop</h3><div class="row"><span>Learn</span><span>→</span><span>Practice</span><span>→</span><span>PYQ</span><span>→</span><span>Test</span><span>→</span><span>Analyse</span><span>→</span><span>Revise</span></div></div>
+</section>
+
+<section id="syllabus" class="page">
+  <div class="card"><h2>📚 Syllabus Command Board</h2><p class="muted">Tick a chapter only when you have learned it, practiced it and tested it. Progress is saved on this device.</p>
+  <div class="grid2">
+    <div><h3>⚡ Physics</h3><div id="physics"></div></div>
+    <div><h3>🧪 Chemistry</h3><div id="chemistry"></div></div>
+    <div><h3>📐 Mathematics</h3><div id="maths"></div></div>
+    <div><h3>🎯 Master rule</h3><p class="muted">🟥 Not started → 🟨 Learning → 🟦 Practicing → 🟩 Mastered → ⭐ Advanced mastered.</p></div>
+  </div></div>
+</section>
+
+<section id="daily" class="page">
+  <div class="grid2">
+    <div class="card"><h2>🎯 Today's 30-question goal</h2><div class="big green"><span id="qCount">0</span>/30</div><div class="progress"><i id="qBar"></i></div><div class="actions"><button onclick="addQ(5)">+5</button><button onclick="addQ(10)">+10</button><button onclick="addQ(30)">+30</button><button onclick="addQ(-5)">−5</button></div><p class="small">Use the number buttons after completing quality questions.</p></div>
+    <div class="card"><h2>🧠 Daily checklist</h2><label><input class="check" type="checkbox" data-check="theory"> Theory / lecture completed</label><br><br><label><input class="check" type="checkbox" data-check="practice"> Practice completed</label><br><br><label><input class="check" type="checkbox" data-check="revision"> Revision completed</label><br><br><label><input class="check" type="checkbox" data-check="errors"> Error review completed</label></div>
+  </div>
+  <div class="card"><h3>📝 Today’s plan</h3><textarea id="plan" style="width:100%;min-height:150px;background:#0c1115;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px" placeholder="Write today's exact tasks..."></textarea><br><br><button onclick="savePlan()">Save plan</button></div>
+</section>
+
+<section id="tests" class="page">
+  <div class="card"><h2>🧪 Test Engine</h2><div class="grid2">
+    <input id="testName" placeholder="Test name">
+    <select id="testType"><option>Chapter</option><option>Part syllabus</option><option>Full JEE Main</option><option>Full JEE Advanced</option></select>
+    <input id="score" type="number" placeholder="Score">
+    <input id="accuracy" type="number" placeholder="Accuracy %">
+  </div><br><button onclick="addTest()">Add test</button></div>
+  <div class="card"><h3>Test history</h3><div id="testTable"></div></div>
+  <div class="card"><h3>🔍 Post-test analysis</h3><p class="muted">For every wrong question, classify it: Concept · Application · Calculation · Silly · Time · Selection. Then fix the highest-frequency category first.</p></div>
+</section>
+
+<section id="revision" class="page">
+  <div class="card"><h2>🔄 Spaced Revision Engine</h2><p class="muted">When you finish a chapter, schedule R1 = 1 day, R2 = 7 days, R3 = 30 days, R4 = 90 days.</p>
+  <div class="grid2"><input id="revChapter" placeholder="Chapter"><input id="revDate" type="date"></div><br><button onclick="addRevision()">Schedule revision</button></div>
+  <div class="card"><div id="revTable"></div></div>
+</section>
+
+
+<section id="mistakes" class="page">
+  <div class="card"><h2>❌ Mistake Book</h2>
+    <div class="grid2"><input id="mQ" placeholder="Question / topic"><select id="mType"><option>Concept</option><option>Application</option><option>Calculation</option><option>Silly</option><option>Time</option><option>Selection</option></select></div><br>
+    <input id="mFix" placeholder="Why did I make it + exact fix"><br><br><button onclick="addMistake()">Log mistake</button>
+  </div>
+  <div class="card"><div id="mistakeTable"></div></div>
+</section>
+
+<section id="backlog" class="page">
+  <div class="card"><h2>🚨 Backlog Manager</h2>
+    <div class="grid2"><input id="bTask" placeholder="Backlog task"><select id="bPriority"><option>High</option><option>Medium</option><option>Low</option></select></div><br>
+    <button onclick="addBacklog()">Add backlog</button>
+  </div>
+  <div class="card"><div id="backlogTable"></div></div>
+</section>
+
+
+<section id="calendar" class="page">
+  <div class="card">
+    <div class="row"><div><h2>📅 Daily JEE Planner</h2><p class="muted">Plan each day separately. Tasks are saved on this device.</p></div>
+    <input id="dayDate" type="date" style="max-width:180px" onchange="renderDay()"></div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">Study target</div><div class="big green"><span id="dayDone">0</span>/<span id="dayTotal">0</span></div><div class="small">tasks completed</div></div>
+    <div class="card"><div class="label">Questions</div><div class="big blue" id="dayQuestions">0</div><div class="small">completed today</div></div>
+    <div class="card"><div class="label">Focus blocks</div><div class="big yellow" id="dayBlocks">0</div><div class="small">planned</div></div>
+    <div class="card"><div class="label">Daily status</div><div class="big" id="dayStatus">OPEN</div><div class="small">keep moving</div></div>
+  </div>
+  <div class="card">
+    <h3>➕ Add today's task</h3>
+    <div class="grid2">
+      <input id="dTask" placeholder="e.g. Physics — NLM 40 problems">
+      <select id="dSubject"><option>Physics</option><option>Chemistry</option><option>Mathematics</option><option>Revision</option><option>Test</option>
+      </select>
+      <select id="dPriority"><option>High</option><option>Medium</option><option>Low</option></select>
+      <input id="dTime" placeholder="Time / duration e.g. 90 min">
+    </div><br>
+    <button onclick="addDailyTask()">Add task</button>
+  </div>
+  <div class="card"><div id="dayTasks"></div></div>
+  <div class="card">
+    <h3>🧠 Daily reflection</h3>
+    <textarea id="dayNote" style="width:100%;min-height:120px;background:#0c1115;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px" placeholder="What did I improve today? What must I fix tomorrow?"></textarea><br><br>
+    <button onclick="saveDayNote()">Save reflection</button>
+  </div>
+</section>
+
+<section id="analytics" class="page">
+  <div class="grid">
+    <div class="card"><div class="label">Tests</div><div id="testCount" class="big blue">0</div></div>
+    <div class="card"><div class="label">Average accuracy</div><div id="avgAcc" class="big green">0%</div></div>
+    <div class="card"><div class="label">Completed chapters</div><div id="doneCh" class="big yellow">0</div></div>
+    <div class="card"><div class="label">Revision items</div><div id="revCount" class="big blue">0</div></div>
+  </div>
+  <div class="card"><h2>📈 Your rule</h2><p class="quote">Don't ask “How long did I study?” Ask “What improved today?”</p><p class="muted">Use the dashboard weekly. Your next week's work should come from your test mistakes, weak chapters and backlog—not from random motivation.</p></div>
+</section>
+</main>
+<footer>JEE 2028 · AIR &lt; 10 · Built as a personal preparation system</footer>
+
+<script>
+const chapters={
+physics:["Units & Dimensions","Vectors","Kinematics","Newton's Laws","Friction","Work, Energy & Power","Circular Motion","Centre of Mass & Collision","Rotation","Gravitation","Properties of Matter","Thermodynamics","Kinetic Theory","SHM","Waves","Electrostatics","Current Electricity","Capacitance","Magnetism","EMI & AC","Optics","Modern Physics","Experimental Physics"],
+chemistry:["Mole Concept","Atomic Structure","Periodic Table","Chemical Bonding","States of Matter","Thermodynamics","Redox","Equilibrium","Solutions","Electrochemistry","Chemical Kinetics","GOC","Isomerism","Hydrocarbons","Haloalkanes & Haloarenes","Alcohols, Phenols & Ethers","Aldehydes & Ketones","Amines","Biomolecules","Coordination Compounds","p-Block","d & f Block","Metallurgy","Practical Chemistry"],
+maths:["Sets & Functions","Quadratic Equations","Complex Numbers","Sequence & Series","Trigonometry","Straight Lines","Circles","Permutation & Combination","Binomial Theorem","Probability","Conic Sections","Limits","Continuity & Differentiability","Differentiation","Application of Derivatives","Indefinite Integration","Definite Integration","Differential Equations","Matrices","Determinants","Vectors","3D Geometry","Statistics"]
+};
+let data=JSON.parse(localStorage.getItem("jeeAir10")||'{"chapters":{},"q":0,"tests":[],"revs":[],"checks":{},"plan":"","mistakes":[],"backlog":[],"daily":{}}');
+data.mistakes=data.mistakes||[]; data.backlog=data.backlog||[]; data.daily=data.daily||{};
+data.mistakes=data.mistakes||[]; data.backlog=data.backlog||[];
+function save(){localStorage.setItem("jeeAir10",JSON.stringify(data));render();}
+function renderChapters(subject,id){
+ const el=document.getElementById(id); el.innerHTML="";
+ chapters[subject].forEach((c,i)=>{
+   const key=subject+i; const checked=!!data.chapters[key];
+   el.innerHTML+=`<label style="display:block;padding:8px;border-bottom:1px solid var(--line)"><input class="check" type="checkbox" ${checked?"checked":""} onchange="data.chapters['${key}']=this.checked;save()"> ${c}</label>`;
+ });
+}
+function render(){
+ ["physics","chemistry","maths"].forEach(s=>renderChapters(s,s));
+ const total=Object.values(chapters).flat().length,done=Object.values(data.chapters).filter(Boolean).length;
+ const pct=Math.round(done/total*100); document.getElementById("syllPct").textContent=pct+"%";document.getElementById("doneCh").textContent=done;
+ const q=Math.max(0,data.q);document.getElementById("qCount").textContent=q;document.getElementById("dailyPct").textContent=q+"/30";document.getElementById("qBar").style.width=Math.min(100,q/30*100)+"%";document.getElementById("missionBar").style.width=Math.min(100,q/30*100)+"%";
+ document.getElementById("mission").textContent=q>=30?"🔥 Daily target complete. Protect the streak.":`Complete ${30-q} more quality questions today.`;
+ const now=new Date(); const days=(d)=>Math.max(0,Math.ceil((new Date(d)-now)/86400000));document.getElementById("mainDays").textContent=days("2028-01-22");document.getElementById("advDays").textContent=days("2028-05-18");
+ document.querySelectorAll("[data-check]").forEach(x=>x.checked=!!data.checks[x.dataset.check]);document.getElementById("plan").value=data.plan||"";
+ const tt=document.getElementById("testTable");tt.innerHTML=data.tests.length?`<table><tr><th>Test</th><th>Type</th><th>Score</th><th>Accuracy</th></tr>${data.tests.slice().reverse().map(t=>`<tr><td>${esc(t.n)}</td><td>${t.type}</td><td>${t.s}</td><td>${t.a}%</td></tr>`).join("")}</table>`:"<p class='muted'>No tests logged yet.</p>";
+ const avg=data.tests.length?Math.round(data.tests.reduce((a,b)=>a+Number(b.a||0),0)/data.tests.length):0;document.getElementById("testCount").textContent=data.tests.length;document.getElementById("avgAcc").textContent=avg+"%";document.getElementById("revCount").textContent=data.revs.length;
+ document.getElementById("revTable").innerHTML=data.revs.length?`<table><tr><th>Chapter</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr>${data.revs.slice().reverse().map(r=>`<tr><td>${esc(r.c)}</td><td>${r.d1}</td><td>${r.d7}</td><td>${r.d30}</td><td>${r.d90}</td></tr>`).join("")}</table>`:"<p class='muted'>No revisions scheduled yet.</p>";
+ const weak=document.getElementById("weakRadar");weak.textContent=data.tests.length?`You have ${data.tests.length} test(s). Prioritise the lowest-accuracy test type/subject and review its mistakes.`:"Take your first test to start the radar.";
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function addQ(n){data.q=Math.max(0,data.q+n);save()}
+function savePlan(){data.plan=document.getElementById("plan").value;save();alert("Plan saved.")}
+function addTest(){let n=document.getElementById("testName").value.trim();if(!n)return;data.tests.push({n,type:document.getElementById("testType").value,s:document.getElementById("score").value||0,a:document.getElementById("accuracy").value||0});document.getElementById("testName").value="";save()}
+
+function localDateKey(){
+ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function dateKey(){return document.getElementById("dayDate").value || localDateKey()}
+function dayObj(){let k=dateKey();if(!data.daily)data.daily={};if(!data.daily[k])data.daily[k]={tasks:[],note:"",questions:0,blocks:0};return data.daily[k]}
+function renderDay(){
+ const dateEl=document.getElementById("dayDate"); if(!dateEl)return;
+ const d=dayObj(), k=dateKey();
+ document.getElementById("dayDone").textContent=d.tasks.filter(x=>x.done).length;
+ document.getElementById("dayTotal").textContent=d.tasks.length;
+ document.getElementById("dayQuestions").textContent=d.questions||0;
+ document.getElementById("dayBlocks").textContent=d.blocks||0;
+ document.getElementById("dayStatus").textContent=d.tasks.length&&d.tasks.every(x=>x.done)?"DONE":"OPEN";
+ document.getElementById("dayNote").value=d.note||"";
+ const el=document.getElementById("dayTasks");
+ el.innerHTML=d.tasks.length?`<table><tr><th>Done</th><th>Task</th><th>Subject</th><th>Priority</th><th>Time</th></tr>${d.tasks.map((t,i)=>`<tr><td><input class="check" type="checkbox" ${t.done?"checked":""} onchange="toggleDaily(${i})"></td><td>${esc(t.t)}</td><td>${t.s}</td><td>${t.p}</td><td>${esc(t.time)}</td></tr>`).join("")}</table>`:"<p class='muted'>No tasks planned for this day.</p>";
+}
+function addDailyTask(){
+ let t=document.getElementById("dTask").value.trim(); if(!t)return;
+ let d=dayObj();d.tasks.push({t,s:document.getElementById("dSubject").value,p:document.getElementById("dPriority").value,time:document.getElementById("dTime").value,done:false});
+ document.getElementById("dTask").value="";document.getElementById("dTime").value="";save();renderDay();
+}
+function toggleDaily(i){let d=dayObj();d.tasks[i].done=!d.tasks[i].done;save()}
+function saveDayNote(){dayObj().note=document.getElementById("dayNote").value;save();alert("Daily reflection saved.")}
+
+function addMistake(){let q=document.getElementById("mQ").value.trim(),t=document.getElementById("mType").value,f=document.getElementById("mFix").value.trim();if(!q)return;data.mistakes.push({q,t,f});document.getElementById("mQ").value="";document.getElementById("mFix").value="";save()}
+function addBacklog(){let t=document.getElementById("bTask").value.trim(),p=document.getElementById("bPriority").value;if(!t)return;data.backlog.push({t,p,done:false});document.getElementById("bTask").value="";save()}
+function toggleBacklog(i){data.backlog[i].done=!data.backlog[i].done;save()}
+function addRevision(){let c=document.getElementById("revChapter").value.trim(),d=document.getElementById("revDate").value;if(!c||!d)return;let x=new Date(d+"T12:00:00");const f=n=>new Date(x.getTime()+n*86400000).toISOString().slice(0,10);data.revs.push({c,d1:f(1),d7:f(7),d30:f(30),d90:f(90)});document.getElementById("revChapter").value="";save()}
+document.querySelectorAll("[data-check]").forEach(x=>x.addEventListener("change",()=>{data.checks[x.dataset.check]=x.checked;save()}));
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(t.dataset.page).classList.add("active");}));
+function resetData(){if(confirm("Reset all saved JEE data on this device?")){localStorage.removeItem("jeeAir10");location.reload()}}
+const today=localDateKey();document.getElementById("dayDate").value=today;
+render();
+</script>
+<button id="installAppBtn" onclick="installApp()" style="display:none;position:fixed;right:16px;bottom:16px;z-index:20;background:#18d88b;color:#03140d;border:0;border-radius:999px;padding:13px 16px;font-weight:800;box-shadow:0 8px 30px #0008">📲 Install App</button>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
+}
+let deferredInstallPrompt = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault(); deferredInstallPrompt = e;
+  const b=document.getElementById("installAppBtn");
+  if(b) b.style.display="inline-block";
+});
+async function installApp(){
+  if(!deferredInstallPrompt){ alert("If Install isn't available yet, open this site from its hosted HTTPS address in Chrome, then use Chrome ⋮ → Add to Home screen."); return; }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  const b=document.getElementById("installAppBtn"); if(b)b.style.display="none";
+}
+</script>
+</body>
+</html>
